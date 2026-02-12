@@ -971,6 +971,54 @@ target_include_directories(joypad_controller_macropad PUBLIC ${CONTROLLER_INCLUD
 target_link_libraries(joypad_controller_macropad PRIVATE ${CONTROLLER_LIBRARIES})
 joypad_target_common(joypad_controller_macropad)
 
+# Waveshare RP2040-Zero usb-c (Custom Pins 6/7) ---
+add_executable(joypad_usb_waveshare2040)
+target_compile_definitions(joypad_usb_waveshare2040 PRIVATE
+    CONFIG_USB=1
+    CONFIG_PIO_USB_DP_PIN=6           # <--- PIN 6
+    PICO_DEFAULT_PIO_USB_DP_PIN=6     # <--- PIN 6
+    BOARD_TUH_RHPORT=1
+    WS2812_PIN=16
+    USE_BOOTSEL_BUTTON=1
+)
+target_sources(joypad_usb_waveshare2040 PUBLIC ${COMMON_SOURCES} ${USB_DEVICE_SOURCES}
+    ${CMAKE_CURRENT_SOURCE_DIR}/apps/usb2usb/app.c
+)
+target_include_directories(joypad_usb_waveshare2040 PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/apps/usb2usb
+    ${CMAKE_CURRENT_SOURCE_DIR}/usb/usbd
+)
+target_link_libraries(joypad_usb_waveshare2040 PRIVATE ${COMMON_LIBRARIES} tinyusb_device tinyusb_pico_pio_usb)
+joypad_target_common(joypad_usb_waveshare2040)
+joypad_add_btstack(joypad_usb_waveshare2040)
+
+
+# Waveshare RP2350 usb-c (Custom Pins 28/29 + VBUS Force) ---
+add_executable(joypad_usb_waveshare2350)
+target_compile_definitions(joypad_usb_waveshare2350 PRIVATE
+    CONFIG_USB=1
+    CONFIG_USB_HOST=1
+    CONFIG_PIO_USB_DP_PIN=28          # <--- PIN 28
+    PICO_DEFAULT_PIO_USB_DP_PIN=28    # <--- PIN 28
+    BOARD_TUH_RHPORT=1
+    WS2812_PIN=16
+    USE_BOOTSEL_BUTTON=1
+    APP_NAME="usb2usb"
+    PICO_DEFAULT_PIO_USB_VBUSEN_STATE=1 
+)
+target_sources(joypad_usb_waveshare2350 PUBLIC ${COMMON_SOURCES} ${USB_DEVICE_SOURCES}
+    ${CMAKE_CURRENT_SOURCE_DIR}/apps/usb2usb/app.c
+)
+target_include_directories(joypad_usb_waveshare2350 PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/apps/usb2usb
+    ${CMAKE_CURRENT_SOURCE_DIR}/usb/usbd
+)
+target_link_libraries(joypad_usb_waveshare2350 PRIVATE ${COMMON_LIBRARIES} tinyusb_device tinyusb_pico_pio_usb)
+joypad_target_common(joypad_usb_waveshare2350)
+joypad_add_btstack(joypad_usb_waveshare2350)
+
+# ============================================================================
+
 # ============================================================================
 # DEBUG BUILD CONFIGURATION
 # ============================================================================
